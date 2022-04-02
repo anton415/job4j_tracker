@@ -3,8 +3,10 @@ package ru.job4j.tracker.store;
 import ru.job4j.tracker.model.Item;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
+/**
+ * Store - значит, что данные хранятся в памяти.
+ */
 public class MemTracker {
 
     private final List<Item> items = new ArrayList<>();
