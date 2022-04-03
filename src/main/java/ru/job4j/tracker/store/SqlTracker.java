@@ -128,7 +128,7 @@ public class SqlTracker implements Store, AutoCloseable {
 
             preparedStatement.setInt(1, id);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                if(resultSet.next()) {
+                if (resultSet.next()) {
                     item = createItem(resultSet);
                 }
             }
