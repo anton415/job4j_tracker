@@ -65,7 +65,7 @@ public class SqlTracker implements Store, AutoCloseable {
     public boolean replace(int id, Item item) {
         boolean isReplaced;
         try (PreparedStatement preparedStatement = connection.prepareStatement(
-                "update items set name=? created=? where id=?"
+                "update items set name=?, created=? where id=?"
         )) {
             preparedStatement.setString(1, item.getName());
             preparedStatement.setTimestamp(2, Timestamp.valueOf(item.getCreated()));
