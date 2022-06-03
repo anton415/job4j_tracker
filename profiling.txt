@@ -4,3 +4,18 @@
 Происходит загрузка Heap при просмотре всех заявок.
 При 4500 заявок и нескольких вызовов просмотра, Heap увеличилась до 40 Mb.
 Также происходит увеличение CPU примерно до 1%.
+
+При ограничении размера памяти -Xmx10m и постоянном добавлении и просмотра заявок, получилось добиться переполнения памяти на 17300 заявок.
+
+Exception in thread "main" java.lang.OutOfMemoryError: Java heap space
+	at java.base/sun.util.calendar.Gregorian.newCalendarDate(Gregorian.java:85)
+	at java.base/sun.util.calendar.Gregorian.getCalendarDate(Gregorian.java:77)
+	at java.base/sun.util.calendar.Gregorian.getCalendarDate(Gregorian.java:37)
+	at java.base/java.util.Date.normalize(Date.java:1198)
+	at java.base/java.util.Date.getYear(Date.java:651)
+	at java.sql/java.sql.Timestamp.toLocalDateTime(Timestamp.java:519)
+	at ru.job4j.tracker.store.SqlTracker.createItem(SqlTracker.java:152)
+	at ru.job4j.tracker.store.SqlTracker.findAll(SqlTracker.java:102)
+	at ru.job4j.tracker.action.FindAllAction.execute(FindAllAction.java:25)
+	at ru.job4j.tracker.StartUI.init(StartUI.java:25)
+	at ru.job4j.tracker.StartUI.main(StartUI.java:54)
