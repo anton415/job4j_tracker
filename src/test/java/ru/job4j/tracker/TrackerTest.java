@@ -103,7 +103,8 @@ public class TrackerTest {
         Tracker tracker = new Tracker();
         Item item = new Item("Bug");
         tracker.add(item);
-        tracker.delete(1000);
+        boolean result = tracker.delete(1000);
         assertThat(tracker.findById(item.getId()).getName()).isEqualTo("Bug");
+        assertThat(result).isFalse();
     }
 }
