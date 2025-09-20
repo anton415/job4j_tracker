@@ -47,4 +47,9 @@ public class Item {
     public LocalDateTime getCreated() {
         return created;
     }
+
+    @Override
+    public String toString() {
+        return String.format("Item{id=%d, name='%s', created=%s}", id, name, created);
+    }
 }
