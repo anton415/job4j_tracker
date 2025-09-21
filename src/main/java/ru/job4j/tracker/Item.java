@@ -1,6 +1,7 @@
 package ru.job4j.tracker;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * The Item class describes a statement model.
@@ -8,6 +9,7 @@ import java.time.LocalDateTime;
  * @since 16.09.2025
  */
 public class Item {
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd-MMMM-EEEE-yyyy HH:mm:ss");
     /**
      * The id field is a unique application number.
      */
@@ -50,6 +52,6 @@ public class Item {
 
     @Override
     public String toString() {
-        return String.format("Item{id=%d, name='%s', created=%s}", id, name, created);
+        return String.format("Item{id=%d, name='%s', created=%s}", id, name, created.format(FORMATTER));
     }
 }
