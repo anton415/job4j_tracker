@@ -31,9 +31,11 @@ import java.util.Properties;
  */
 public class SqlTracker extends Tracker implements AutoCloseable {
     private static final String DEFAULT_PROPERTIES = "db/liquibase.properties";
+    private static final String DEFAULT_CHANGELOG = "db/dbchangelog.xml";
     private static final String RESOURCE_PREFIX = "src/main/resources/";
 
     private final Connection cn;
+    private final boolean closeConnection;
 
     public SqlTracker() {
         this(loadProperties(DEFAULT_PROPERTIES));
@@ -47,10 +49,16 @@ public class SqlTracker extends Tracker implements AutoCloseable {
                     cfg.getProperty("username"),
                     cfg.getProperty("password")
             );
-            initDatabase(cfg);
+            closeConnection = true;
+            initDatabase(cfg.getProperty("changeLogFile"));
         } catch (ClassNotFoundException | SQLException e) {
             throw new IllegalStateException("Cannot initialize SQL tracker", e);
         }
+    }
+
+    public SqlTracker(Connection cn) {
+        this.cn = cn;
+        this.closeConnection = false;
     }
 
     @Override
@@ -153,11 +161,13 @@ public class SqlTracker extends Tracker implements AutoCloseable {
 
     @Override
     public void close() throws Exception {
-        cn.close();
+        if (closeConnection) {
+            cn.close();
+        }
     }
 
-    private void initDatabase(Properties cfg) {
-        String changeLog = normalizeResourcePath(cfg.getProperty("changeLogFile"));
+    private void initDatabase(String changeLogFile) {
+        String changeLog = normalizeResourcePath(changeLogFile);
         try {
             Database database = DatabaseFactory.getInstance()
                     .findCorrectDatabaseImplementation(new JdbcConnection(cn));
@@ -180,7 +190,7 @@ public class SqlTracker extends Tracker implements AutoCloseable {
 
     private String normalizeResourcePath(String path) {
         if (path == null || path.isBlank()) {
-            return "db/dbchangelog.xml";
+            return DEFAULT_CHANGELOG;
         }
         return path.startsWith(RESOURCE_PREFIX)
                 ? path.substring(RESOURCE_PREFIX.length())
