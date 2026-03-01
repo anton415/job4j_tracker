@@ -21,13 +21,20 @@ public class Item {
     /**
      * The date and time of created item.
      */
-    private final LocalDateTime created = LocalDateTime.now();
+    private final LocalDateTime created;
 
     public Item() {
+        this(null);
     }
 
     public Item(String name) {
+        this(0, name, LocalDateTime.now());
+    }
+
+    public Item(int id, String name, LocalDateTime created) {
+        this.id = id;
         this.name = name;
+        this.created = created == null ? LocalDateTime.now() : created;
     }
 
     public int getId() {

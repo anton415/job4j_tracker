@@ -50,16 +50,19 @@ public class StartUI {
     public static void main(String[] args) {
         Output output = new ConsoleOutput();
         Input input = new ValidateInput();
-        Tracker tracker = new Tracker();
         UserAction[] actions = {
-                new CreateAction(output),
-                new FindAllAction(output),
-                new ReplaceAction(output),
-                new DeleteAction(output),
-                new FindByIdAction(output),
-                new FindByNameAction(output),
-                new ExitAction(output)
+            new CreateAction(output),
+            new FindAllAction(output),
+            new ReplaceAction(output),
+            new DeleteAction(output),
+            new FindByIdAction(output),
+            new FindByNameAction(output),
+            new ExitAction(output)
         };
-        new StartUI(output).init(input, tracker, actions);
+        try (SqlTracker tracker = new SqlTracker()) {
+            new StartUI(output).init(input, tracker, actions);
+        } catch (Exception e) {
+            throw new IllegalStateException("Cannot start tracker", e);
+        }
     }
 }
