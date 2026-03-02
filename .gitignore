@@ -29,3 +29,5 @@ target
 out
 
 .vscode
+testdb.trace.db
+testdb.mv.db
