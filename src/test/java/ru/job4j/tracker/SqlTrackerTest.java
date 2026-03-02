@@ -1,6 +1,7 @@
 package ru.job4j.tracker;
 
 import java.io.InputStream;
+import java.time.LocalDateTime;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -14,6 +15,9 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 public class SqlTrackerTest {
+    private static final LocalDateTime FIRST_TIME = LocalDateTime.of(2026, 3, 2, 12, 0, 1);
+    private static final LocalDateTime SECOND_TIME = LocalDateTime.of(2026, 3, 2, 12, 0, 2);
+    private static final LocalDateTime THIRD_TIME = LocalDateTime.of(2026, 3, 2, 12, 0, 3);
 
     private static Connection connection;
 
@@ -49,7 +53,7 @@ public class SqlTrackerTest {
     @Test
     public void whenSaveItemAndFindByGeneratedIdThenMustBeTheSame() {
         SqlTracker tracker = new SqlTracker(connection);
-        Item item = new Item("item");
+        Item item = new Item(0, "item", FIRST_TIME);
         tracker.add(item);
         assertThat(tracker.findById(item.getId())).isEqualTo(item);
     }
@@ -63,8 +67,8 @@ public class SqlTrackerTest {
     @Test
     public void whenFindAllThenReturnAllItemsOrderedById() {
         SqlTracker tracker = new SqlTracker(connection);
-        Item item1 = new Item("item1");
-        Item item2 = new Item("item2");
+        Item item1 = new Item(0, "item1", FIRST_TIME);
+        Item item2 = new Item(0, "item2", SECOND_TIME);
         tracker.add(item1);
         tracker.add(item2);
         assertThat(tracker.findAll()).containsExactly(item1, item2);
@@ -79,9 +83,9 @@ public class SqlTrackerTest {
     @Test
     public void whenFindByNameThenReturnOnlyMatchingItemsOrderedById() {
         SqlTracker tracker = new SqlTracker(connection);
-        Item item1 = new Item("item");
-        Item item2 = new Item("item");
-        Item item3 = new Item("other");
+        Item item1 = new Item(0, "item", FIRST_TIME);
+        Item item2 = new Item(0, "item", SECOND_TIME);
+        Item item3 = new Item(0, "other", THIRD_TIME);
         tracker.add(item1);
         tracker.add(item2);
         tracker.add(item3);
@@ -97,9 +101,9 @@ public class SqlTrackerTest {
     @Test
     public void whenReplaceExistingItemThenReturnTrueAndUpdateStoredItem() {
         SqlTracker tracker = new SqlTracker(connection);
-        Item item = new Item("item");
+        Item item = new Item(0, "item", FIRST_TIME);
         tracker.add(item);
-        Item updatedItem = new Item("updated");
+        Item updatedItem = new Item(0, "updated", SECOND_TIME);
         boolean replaced = tracker.replace(item.getId(), updatedItem);
         assertThat(replaced).isTrue();
         updatedItem.setId(item.getId());
@@ -109,9 +113,9 @@ public class SqlTrackerTest {
     @Test
     public void whenReplaceExistingItemThenReplacementGetsTargetId() {
         SqlTracker tracker = new SqlTracker(connection);
-        Item item = new Item("item");
+        Item item = new Item(0, "item", FIRST_TIME);
         tracker.add(item);
-        Item updatedItem = new Item("updated");
+        Item updatedItem = new Item(0, "updated", SECOND_TIME);
         tracker.replace(item.getId(), updatedItem);
         assertThat(updatedItem.getId()).isEqualTo(item.getId());
     }
@@ -119,7 +123,7 @@ public class SqlTrackerTest {
     @Test
     public void whenReplaceMissingItemThenReturnFalse() {
         SqlTracker tracker = new SqlTracker(connection);
-        Item updatedItem = new Item("updated");
+        Item updatedItem = new Item(0, "updated", FIRST_TIME);
         boolean replaced = tracker.replace(999, updatedItem);
         assertThat(replaced).isFalse();
     }
@@ -127,7 +131,7 @@ public class SqlTrackerTest {
     @Test
     public void whenDeleteExistingItemThenReturnTrueAndItemBecomesUnavailable() {
         SqlTracker tracker = new SqlTracker(connection);
-        Item item = new Item("item");
+        Item item = new Item(0, "item", FIRST_TIME);
         tracker.add(item);
         boolean deleted = tracker.delete(item.getId());
         assertThat(deleted).isTrue();
