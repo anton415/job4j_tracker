@@ -26,7 +26,7 @@ public class SqlTrackerTest {
         try (InputStream in = SqlTracker.class.getClassLoader().getResourceAsStream("db/liquibase_test.properties")) {
             Properties config = new Properties();
             config.load(in);
-            Class.forName(config.getProperty("driver-class-name"));
+            Class.forName(config.getProperty("driver"));
             connection = DriverManager.getConnection(
                     config.getProperty("url"),
                     config.getProperty("username"),

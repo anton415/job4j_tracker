@@ -43,7 +43,7 @@ public class SqlTracker extends Tracker implements AutoCloseable {
 
     public SqlTracker(Properties cfg) {
         try {
-            Class.forName(cfg.getProperty("driver-class-name"));
+            Class.forName(getDriver(cfg));
             cn = DriverManager.getConnection(
                     cfg.getProperty("url"),
                     cfg.getProperty("username"),
@@ -195,6 +195,10 @@ public class SqlTracker extends Tracker implements AutoCloseable {
         return path.startsWith(RESOURCE_PREFIX)
                 ? path.substring(RESOURCE_PREFIX.length())
                 : path;
+    }
+
+    private static String getDriver(Properties cfg) {
+        return cfg.getProperty("driver", cfg.getProperty("driver-class-name"));
     }
 
     private static Properties loadProperties(String path) {
