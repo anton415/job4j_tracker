@@ -2,6 +2,12 @@ package ru.job4j.tracker;
 
 import java.time.LocalDateTime;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 import lombok.Data;
 
 /**
@@ -9,21 +15,25 @@ import lombok.Data;
  * @author Anton Serdyuchenko
  * @since 16.09.2025
  */
+@Entity
+@Table(name = "items")
 @Data
 public class Item {
-    private int id;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
     private String name;
-    private final LocalDateTime created;
+    private LocalDateTime created = LocalDateTime.now();
 
     public Item() {
-        this(null);
     }
 
     public Item(String name) {
-        this(0, name, LocalDateTime.now());
+        this(null, name, LocalDateTime.now());
     }
 
-    public Item(int id, String name, LocalDateTime created) {
+    public Item(Integer id, String name, LocalDateTime created) {
         this.id = id;
         this.name = name;
         this.created = created == null ? LocalDateTime.now() : created;
