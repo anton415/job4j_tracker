@@ -25,10 +25,9 @@ public class HbmTracker implements Store, AutoCloseable {
     @Override
     public boolean replace(Integer id, Item item) {
         boolean rsl = tx(session -> session.createQuery(
-                        "UPDATE Item SET name = :name, created = :created WHERE id = :id"
+                        "UPDATE Item SET name = :name WHERE id = :id"
                 )
                 .setParameter("name", item.getName())
-                .setParameter("created", item.getCreated())
                 .setParameter("id", id)
                 .executeUpdate() > 0);
         if (rsl) {
